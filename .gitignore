@@ -2,3 +2,7 @@
 __pycache__
 
 /server_config.json
+/pc_config.json
+
+/id_rsa
+/id_rsa.pub
