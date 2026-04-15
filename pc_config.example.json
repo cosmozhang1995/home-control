@@ -1,0 +1,9 @@
+{
+    "server_base_url": "http://myserver.com:8000",
+    "steam": {
+        "path": "C:\\Program Files (x86)\\Steam\\steam.exe"
+    },
+    "uu": {
+        "path": "C:\\Program Files (x86)\\Netease\\UU\\uu_launcher.exe"
+    }
+}

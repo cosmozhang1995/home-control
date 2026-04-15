@@ -1,0 +1,8 @@
+{
+    "running_directory": "/var/run/home-control/",
+    "pc": {
+        "sgdz_account": "",
+        "sgdz_password": "",
+        "device_name": ""
+    }
+}
