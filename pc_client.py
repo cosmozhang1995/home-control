@@ -60,8 +60,10 @@ try:
 
     launch = config.get('pc', {}).get('launch', {})
     if launch.get('uu', False):
+        logging.info("launch UU")
         subprocess.Popen(pc_config.get('uu').get('path'))
     if launch.get('steam', False):
+        logging.info("launch Steam")
         subprocess.Popen([pc_config.get('steam').get('path'), '-bigpicture'])
 except:
     logging.exception("ERROR:")
