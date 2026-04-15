@@ -62,6 +62,6 @@ try:
     if launch.get('uu', False):
         subprocess.Popen(pc_config.get('uu').get('path'))
     if launch.get('steam', False):
-        subprocess.Popen(pc_config.get('steam').get('path'))
+        subprocess.Popen([pc_config.get('steam').get('path'), '-bigpicture'])
 except:
     logging.exception("ERROR:")
