@@ -119,30 +119,32 @@ def pc_startup():
     status_code = int(pc_control(1).get('status', -1))
     if status_code != 0:
         raise SystemError(f"Songguo API returns {status_code}")
-    return "OK"
 def pc_shutdown():
     status_code = int(pc_control(0).get('status', -1))
     if status_code != 0:
         raise SystemError(f"Songguo API returns {status_code}")
-    return "OK"
-def pc_shutdown():
-    return pc_control(0)
+def pc_status():
+    return pc_control(11)
 
-def handle_pc_launch(mode="default"):
+def handle_pc_launch(mode="default", launch=True):
     if mode == "default":
         edit_config(**{
             "pc.launch.steam": False,
             "pc.launch.uu": False,
             "pc.launch.display": 1,
         })
-        return pc_startup()
+        if launch:
+            pc_startup()
+        return "OK"
     elif mode == "game":
         edit_config(**{
             "pc.launch.steam": True,
             "pc.launch.uu": True,
             "pc.launch.display": 2,
         })
-        return pc_startup()
+        if launch:
+            pc_startup()
+        return "OK"
     else:
         raise ValueError(f"invalid mode: {mode}")
 
@@ -166,7 +168,8 @@ def application(environ, start_response):
     elif method == "GET" and path == "/pc_launch":
         qs = parse_qs(environ.get("QUERY_STRING", ""))
         mode = qs.get("mode", ["default"])[0]
-        return make_response(start_response, handle_pc_launch(mode))
+        launch = qs.get("launch", ["true"])[0].lower() == "true"
+        return make_response(start_response, handle_pc_launch(mode=mode, launch=launch))
     elif method == "GET" and path == "/pc_shutdown":
         return make_response(start_response, handle_pc_shutdown())
     else:
