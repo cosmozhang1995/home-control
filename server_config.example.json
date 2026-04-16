@@ -1,5 +1,6 @@
 {
     "running_directory": "/var/run/home-control/",
+    "socket_port": 8001,
     "pc": {
         "sgdz_account": "",
         "sgdz_password": "",

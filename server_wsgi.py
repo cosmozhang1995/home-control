@@ -2,6 +2,7 @@ import os
 import json
 from urllib.parse import parse_qs
 import requests
+import socket
 
 PRIVATE_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "server_config.json")
 
@@ -119,6 +120,10 @@ def pc_startup():
     status_code = int(pc_control(1).get('status', -1))
     if status_code != 0:
         raise SystemError(f"Songguo API returns {status_code}")
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(('127.0.0.1', read_private_config().get('socket_port')))
+    sock.send(b'restart')
+    sock.close()
 def pc_shutdown():
     status_code = int(pc_control(0).get('status', -1))
     if status_code != 0:

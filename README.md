@@ -4,7 +4,7 @@
 
 分为 Server端 和 PC端。
 
-在 Server端 上部署后，通过`http://server:80000/pc_launch?mode=xxx`远程启动PC端。
+在 Server端 上部署后，通过`http://server:8000/pc_launch?mode=xxx`远程启动PC端。
 
 PC端上安装了松果电子远程启动模块，Server端通过松果电子提供的API完成远程启动。同时需要配置本项目中的`pc_client.py`开机自启，以便在开机后自动做一些配置。
 
@@ -19,6 +19,17 @@ mode的可选项有：
 ```
 sudo ./install_server.py
 ```
+
+别忘了开放8000和8001端口。
+
+如果发现8000端口（HTTP）不通，可能是apache未监听该端口，尝试编辑`/etc/apache2/ports.conf`，添加：
+```
+Listen 8000
+```
+
+将会部署以下服务：
+1. apache站点：000-home-control.conf，运行在8000上，提供HTTP API服务
+2. systemd服务：home-control-socket.service，运行在8001上，负责与PC端保持连接，推送重启消息
 
 ## PC端部署
 

@@ -86,6 +86,35 @@ def install():
         if not run_command(["systemctl", "reload", "apache2"]):
             print("ERROR: failed to restart apache2 services")
 
+    # initialize home-control-socket.service
+    SOCKET_SERVICE_NAME = "Home Control Socket"
+    SOCKET_SERVICE_FILENAME = "home-control-socket.service"
+    SOCKET_SERVICE_FILE = f"/etc/systemd/system/{SOCKET_SERVICE_FILENAME}"
+    if os.path.exists(SOCKET_SERVICE_FILE):
+        print(f"ERROR: service already exists: {SOCKET_SERVICE_FILE}")
+        exit(1)
+    with open(SOCKET_SERVICE_FILE, 'w') as f:
+        f.write(f"""[Unit]
+Description={SOCKET_SERVICE_NAME}
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 {WORK_DIRECTORY}/server_socket.py
+WorkingDirectory={WORK_DIRECTORY}
+Restart=always
+RestartSec=3
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target
+""")
+    if not run_command([f"systemctl", "enable", SOCKET_SERVICE_FILENAME]):
+        print(f"ERROR: failed to enable service {SOCKET_SERVICE_FILENAME}")
+    if not run_command([f"systemctl", "start", SOCKET_SERVICE_FILENAME]):
+        print(f"ERROR: failed to start service {SOCKET_SERVICE_FILENAME}")
+
     print("SUCCESS: installation success!")
 
 
@@ -93,6 +122,17 @@ def uninstall():
     # load private config
     with open(PRIVATE_CONFIG_FILE, 'r', encoding='utf-8') as f:
         config = json.load(f)
+    
+    # remove home-control-socket.service
+    SOCKET_SERVICE_NAME = "Home Control Socket"
+    SOCKET_SERVICE_FILENAME = "home-control-socket.service"
+    SOCKET_SERVICE_FILE = f"/etc/systemd/system/{SOCKET_SERVICE_FILENAME}"
+    run_command([f"systemctl", "disable", SOCKET_SERVICE_FILENAME])
+    run_command([f"systemctl", "stop", SOCKET_SERVICE_FILENAME])
+    try:
+        os.remove(SOCKET_SERVICE_FILE)
+    except FileNotFoundError:
+        pass
 
     # disable apache site
     run_command(["a2dissite", APACHE_SITE_NAME])
