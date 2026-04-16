@@ -110,7 +110,7 @@ def pc_control(value):
                                 "sgdz_account": config.get("pc").get("sgdz_account"),
                                 "sgdz_password": config.get("pc").get("sgdz_password"),
                                 "device_name": config.get("pc").get("device_name"),
-                                "value": 1
+                                "value": value
                             })).json()
     return response
 
@@ -150,7 +150,8 @@ def handle_pc_launch(mode="default", launch=True):
 
 
 def handle_pc_shutdown():
-    return pc_shutdown()
+    pc_shutdown()
+    return "OK"
 
 
 def application(environ, start_response):
@@ -172,5 +173,7 @@ def application(environ, start_response):
         return make_response(start_response, handle_pc_launch(mode=mode, launch=launch))
     elif method == "GET" and path == "/pc_shutdown":
         return make_response(start_response, handle_pc_shutdown())
+    elif method == "GET" and path == "/pc_status":
+        return make_response(start_response, pc_status())
     else:
         return response_404(start_response)
