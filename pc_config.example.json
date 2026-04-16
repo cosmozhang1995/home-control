@@ -1,5 +1,8 @@
 {
+    "force_dns_resolve": true,
     "server_base_url": "http://myserver.com:8000",
+    "server_socket_host": "myserver.com",
+    "server_socket_port": 8001,
     "steam": {
         "path": "C:\\Program Files (x86)\\Steam\\steam.exe"
     },
